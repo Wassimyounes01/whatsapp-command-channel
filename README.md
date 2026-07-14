@@ -1,10 +1,10 @@
-<!-- COURIER — white-label. No personal or company identifiers in this file by design. -->
+<!-- WhatsApp Command Channel — white-label. No personal or company identifiers in this file by design. -->
 
 <p align="center">
-  <img src="assets/hero.svg" alt="COURIER" width="100%">
+  <img src="assets/hero.svg" alt="WhatsApp Command Channel" width="100%">
 </p>
 
-<h1 align="center">📩 COURIER</h1>
+<h1 align="center">📩 WhatsApp Command Channel</h1>
 
 <p align="center">
   <b>Turn your own WhatsApp into a private command-and-notification channel for your automations.</b><br>
@@ -23,9 +23,9 @@
 
 ---
 
-## Why COURIER
+## Why WhatsApp Command Channel
 
-You want your scripts to ping you and take commands where you already are — WhatsApp — without signing up for a business API or routing your messages through someone else's server. COURIER is ~350 lines over the open WhatsApp Web protocol: it holds one connection, writes every message you send yourself to an inbox file, and sends anything your code drops in the outbox. Pair once with your number and it's yours.
+You want your scripts to ping you and take commands where you already are — WhatsApp — without signing up for a business API or routing your messages through someone else's server. WhatsApp Command Channel is ~350 lines over the open WhatsApp Web protocol: it holds one connection, writes every message you send yourself to an inbox file, and sends anything your code drops in the outbox. Pair once with your number and it's yours.
 
 ---
 
@@ -108,4 +108,4 @@ courier/
 
 ---
 
-<p align="center"><sub>COURIER · one socket · file inbox/outbox · pair once · MIT</sub></p>
+<p align="center"><sub>WhatsApp Command Channel · one socket · file inbox/outbox · pair once · MIT</sub></p>

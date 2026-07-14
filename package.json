@@ -1,5 +1,5 @@
 {
-  "name": "courier",
+  "name": "whatsapp-command-channel",
   "version": "1.0.0",
   "description": "Turn your own WhatsApp into a private command-and-notification channel for your automations.",
   "license": "MIT",

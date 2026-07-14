@@ -1,4 +1,4 @@
-# COURIER — Architecture
+# WhatsApp Command Channel — Architecture
 
 A tiny, self-hosted bridge: message yourself on WhatsApp to trigger your scripts, and let your scripts message you back. One socket, file-based inbox/outbox, pair once with your number — no business API, no third-party server.
 
@@ -19,7 +19,7 @@ flowchart LR
 
 ## How it fits together
 
-COURIER is one long-lived process plus a couple of helpers. `wa-daemon.cjs` owns the single WhatsApp connection and does both directions: inbound messages from your own number are appended to `memory/inbox.jsonl`, and anything queued in `memory/outbox.jsonl` is sent and logged. `wa-watch.cjs` watches the inbox file and spawns `wa-reply.cjs` the instant something lands — that reply handler is the part you customize into a real command dispatcher. `connect.cjs` handles one-time pairing; `send.cjs` is a standalone notifier for scripts that only need to message you (don't run it while the daemon is up — there's only one socket).
+WhatsApp Command Channel is one long-lived process plus a couple of helpers. `wa-daemon.cjs` owns the single WhatsApp connection and does both directions: inbound messages from your own number are appended to `memory/inbox.jsonl`, and anything queued in `memory/outbox.jsonl` is sent and logged. `wa-watch.cjs` watches the inbox file and spawns `wa-reply.cjs` the instant something lands — that reply handler is the part you customize into a real command dispatcher. `connect.cjs` handles one-time pairing; `send.cjs` is a standalone notifier for scripts that only need to message you (don't run it while the daemon is up — there's only one socket).
 
 ## Extending it
 

@@ -1,6 +1,6 @@
-# Contributing to COURIER
+# Contributing to WhatsApp Command Channel
 
-Thanks for your interest! COURIER is MIT-licensed and built to be forked, extended, and
+Thanks for your interest! WhatsApp Command Channel is MIT-licensed and built to be forked, extended, and
 dropped into your own stack.
 
 ## Ground rules
