@@ -23,3 +23,8 @@ cache/
 .DS_Store
 Thumbs.db
 desktop.ini
+
+# runtime state (created on first run)
+memory/
+data/
+wa-inbox-media/

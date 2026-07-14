@@ -33,8 +33,9 @@ You want your scripts to ping you and take commands where you already are — Wh
 
 | Module | What it does | Signal |
 |---|---|---|
-| **daemon** | Holds one WhatsApp connection; inbound → inbox file, drains outbox → send | single socket |
-| **watch** | Watches the inbox and triggers a handler the instant a message lands | event-driven, $0 |
+| **daemon** | Holds one WhatsApp connection; inbound → inbox file, drains outbox → send. Writes a liveness beacon | single socket |
+| **watch** | Watches the inbox and triggers a handler the instant a message lands; supervises the daemon every 60s | event-driven, $0 |
+| **watchdog** | Reads the daemon's beacon and restarts it if it's dead, stalled, stacked, or silently dropped its socket | 24/7 self-heal |
 | **reply** | The handler you customize — turn an inbound message into an action + reply | your logic here |
 | **connect** | One-time pairing: 8-digit code or QR, stored to a local session | pair once |
 | **send** | One-shot sender for scripts that just need to notify you | fire-and-forget |
@@ -52,6 +53,10 @@ flowchart LR
     R -->|queue| OUT[("outbox.jsonl")]
     OUT --> D
     D -->|send| YOU
+    D -.->|beacon 15s| HB[("heartbeat.json")]
+    HB -.-> WD["🩺 watchdog"]
+    W -.->|supervise 60s| WD
+    WD -.->|restart if dead/stalled/socket-down| D
     classDef acc fill:#052,stroke:#25D366,color:#fff;
     class D acc;
 ```
@@ -69,11 +74,13 @@ cp .env.example .env      # put YOUR number in WA_TO
 node connect.cjs --pair=15551234567
 
 # 3. run the bridge — daemon + watcher
-node wa-daemon.cjs &     # holds the connection
-node wa-watch.cjs        # fires your handler on each message
+node wa-daemon.cjs &     # holds the connection, writes a liveness beacon
+node wa-watch.cjs        # fires your handler on each message + supervises the daemon 24/7
 ```
 
 > **That's the whole setup: put your number in `.env`, pair once, run two processes.** Everything is local — the session lives on your machine, messages never touch a third-party server.
+>
+> **Stays up on its own.** `wa-watch` supervises the daemon every 60s off its heartbeat beacon: if the daemon dies, stalls, double-launches, or silently drops its socket (connected but no longer receiving), the watchdog kills the stragglers and relaunches exactly one. Run `node wa-watchdog.cjs` for a one-shot manual check. For a hands-off box, run the two processes under a supervisor (pm2, systemd, or a login/Startup item) so they come back after a reboot.
 
 ---
 
@@ -81,8 +88,9 @@ node wa-watch.cjs        # fires your handler on each message
 
 ```
 courier/
-├── wa-daemon.cjs   ← holds the connection, inbox in / outbox out
-├── wa-watch.cjs    ← fires your handler the instant a message lands
+├── wa-daemon.cjs   ← holds the connection, inbox in / outbox out, liveness beacon
+├── wa-watch.cjs    ← fires your handler the instant a message lands + supervises the daemon
+├── wa-watchdog.cjs ← restarts the daemon if it dies / stalls / stacks / drops its socket
 ├── wa-reply.cjs    ← the handler you customize (message → action → reply)
 ├── connect.cjs     ← one-time pairing (code or QR)
 ├── send.cjs        ← one-shot notifier for other scripts

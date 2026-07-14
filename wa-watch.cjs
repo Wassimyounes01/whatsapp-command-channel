@@ -6,6 +6,7 @@
 const fs = require('fs');
 const path = require('path');
 const { spawn } = require('child_process');
+const { superviseOnce } = require('./wa-watchdog.cjs');
 
 const MEM = path.join(__dirname, 'memory');
 try { fs.mkdirSync(MEM, { recursive: true }); } catch {}
@@ -46,3 +47,8 @@ function startWatch() {
 // On boot, handle anything that arrived while the watcher was down (consistency).
 trigger();
 startWatch();
+
+// 24/7 self-heal: the watcher is already running continuously, so it also supervises the daemon on a 60s tick —
+// no extra always-on process. manageWatch:false so it never manages its own kind (can't kill itself in a race).
+// This closes the "daemon died / stalled / stacked / socket silently dropped" gaps without a second keep-alive.
+setInterval(() => { try { superviseOnce({ manageWatch: false }); } catch (e) { console.error('[wa-watch] supervise error:', e.message); } }, 60000);

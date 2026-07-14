@@ -20,6 +20,21 @@ try { fs.mkdirSync(MEM, { recursive: true }); } catch {}
 const INBOX = path.join(MEM, 'whatsapp-inbox.jsonl');
 const OUTBOX = path.join(MEM, 'whatsapp-outbox.jsonl');
 const SENTLOG = path.join(MEM, 'whatsapp-sent.jsonl');
+const HEARTBEAT = path.join(MEM, 'wa-daemon-heartbeat.json');
+const startedAt = new Date().toISOString();
+let lastConnectedTs = null; // advances ONLY while the socket is open, so a stale value = socket dead
+// Liveness beacon for the watchdog (wa-watchdog.cjs). Rewritten on 'open' and every 15s.
+//   connected          = live socket state right now
+//   last_connected_ts  = last moment the socket was actually open (advances only while ready)
+//   started_at         = daemon boot time, so a fresh daemon gets a grace window for its FIRST connect
+// This lets the watchdog catch "process alive but socket silently dead" — the beacon stays fresh
+// regardless of the socket, so freshness ALONE can't prove the bridge is really receiving.
+function writeHeartbeat() {
+  try {
+    if (ready) lastConnectedTs = new Date().toISOString();
+    fs.writeFileSync(HEARTBEAT, JSON.stringify({ ts: new Date().toISOString(), pid: process.pid, connected: ready, last_connected_ts: lastConnectedTs, started_at: startedAt }));
+  } catch {}
+}
 const OWNER_NUM = (process.env.WA_TO || '').replace(/[^0-9]/g, '');
 const OWNER_JID = OWNER_NUM + '@s.whatsapp.net';
 // Your WhatsApp privacy identifier (LID), optional. Inbound is scoped to YOU ONLY — other
@@ -71,7 +86,7 @@ async function start() {
   sock = makeWASocket({ version, auth: state, logger: pino({ level: 'silent' }), printQRInTerminal: false, browser: ['Agent', 'Chrome', '1.0'] });
   sock.ev.on('creds.update', saveCreds);
   sock.ev.on('connection.update', (u) => {
-    if (u.connection === 'open') { ready = true; console.log('WA DAEMON connected as ' + (state.creds && state.creds.me && state.creds.me.id)); drainOutbox(); }
+    if (u.connection === 'open') { ready = true; console.log('WA DAEMON connected as ' + (state.creds && state.creds.me && state.creds.me.id)); writeHeartbeat(); drainOutbox(); }
     if (u.connection === 'close') {
       ready = false;
       const code = u.lastDisconnect && u.lastDisconnect.error && u.lastDisconnect.error.output && u.lastDisconnect.error.output.statusCode;
@@ -153,4 +168,10 @@ setInterval(() => { drainOutbox().catch(() => {}); }, 5000);
 // GENTLE keep-alive only: a presence ping every 30s keeps the WhatsApp Web connection warm (prevents the idle
 // half-death). No zombie-force-close — that caused a reconnect storm. A genuine socket drop still fires 'close' -> reconnect.
 setInterval(() => { try { if (ready && sock) sock.sendPresenceUpdate('available').catch(() => {}); } catch {} }, 30000);
+// Liveness beacon every 15s (independent of the socket): the watchdog reads this. A missing/stale beacon means the
+// process is dead or the event loop stalled -> watchdog restarts. A fresh beacon with connected:false means the
+// process is up but the socket is down (Baileys mid-reconnect); connected:true with a stale last_connected_ts is
+// caught by the watchdog's socket-liveness check (the "works 1 min then silently stops receiving" failure).
+writeHeartbeat();
+setInterval(writeHeartbeat, 15000);
 start().catch(e => { console.error('daemon error:', e.message); process.exit(1); });

@@ -5,7 +5,8 @@
   "license": "MIT",
   "type": "commonjs",
   "scripts": {
-    "test": "node --check wa-daemon.cjs && node --check wa-watch.cjs && node --check wa-reply.cjs && echo ok",
+    "test": "node --check wa-daemon.cjs && node --check wa-watch.cjs && node --check wa-watchdog.cjs && node --check wa-reply.cjs && echo ok",
+    "watchdog": "node wa-watchdog.cjs",
     "check": "for f in *.cjs; do node --check \"$f\"; done && echo ok"
   },
   "keywords": [
