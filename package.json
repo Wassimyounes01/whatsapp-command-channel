@@ -1,20 +1,23 @@
 {
   "name": "whatsapp-command-channel",
   "version": "1.0.0",
-  "description": "Turn your own WhatsApp into a private command-and-notification channel for your automations.",
+  "description": "Turn your own WhatsApp into a command center for Claude — text it, Claude does the work and texts back.",
   "license": "MIT",
   "type": "commonjs",
   "scripts": {
-    "test": "node --check wa-daemon.cjs && node --check wa-watch.cjs && node --check wa-watchdog.cjs && node --check wa-reply.cjs && echo ok",
+    "test": "node --check command-center.cjs && node --check wa-daemon.cjs && node --check wa-watch.cjs && node --check wa-watchdog.cjs && node --check wa-reply.cjs && echo ok",
     "watchdog": "node wa-watchdog.cjs",
+    "command-center": "node command-center.cjs",
     "check": "for f in *.cjs; do node --check \"$f\"; done && echo ok"
   },
   "keywords": [
     "whatsapp",
+    "claude",
+    "command-center",
+    "ai-agent",
+    "claude-cli",
     "baileys",
-    "notifications",
     "self-hosted",
-    "command-channel",
     "automation"
   ],
   "engines": {
