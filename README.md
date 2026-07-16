@@ -103,6 +103,14 @@ node wa-watch.cjs        # routes each message to Claude + supervises the daemon
 
 ---
 
+## See it run
+
+<p align="center">
+  <img src="assets/product.svg" alt="WhatsApp Command Channel — product shot" width="100%">
+</p>
+
+---
+
 ## Repository layout
 
 ```
@@ -116,6 +124,19 @@ whatsapp-command-channel/
 ├── send.cjs           ← one-shot notifier for other scripts
 └── .env.example       ← your number + optional Claude config
 ```
+
+---
+
+## Concepts
+
+| Concept | Meaning |
+|---|---|
+| **Daemon** | Holds the one WhatsApp connection: inbound messages land in an inbox file, an outbox file drains to sends. |
+| **Watch** | fs.watch on the inbox triggers your handler the instant a message lands — no polling loop. |
+| **Command center** | The handler runs a headless agent with real tools using your own CLI login — two modes, cli and ack, both $0. |
+| **Heartbeat beacon** | The daemon stamps connected / last_connected_ts / started_at so the watchdog can tell alive from wedged. |
+| **Watchdog** | superviseOnce() restarts the daemon on dead, stale, stacked, or socket-down — 24/7 self-heal, cross-platform. |
+| **Result, not receipt** | Replies carry the actual output of the work (or an honest failure) — never a canned acknowledgement. |
 
 ---
 

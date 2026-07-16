@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 390" role="img" aria-label="WhatsApp Command Channel — product shot">
+  <defs>
+    <style>
+      .t { font-family: ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace; font-size: 17px; }
+      .title { font-family: ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace; font-size: 14px; fill: #7D8590; }
+    </style>
+    <clipPath id="panel"><rect x="1" y="1" width="1198" height="388" rx="14"/></clipPath>
+  </defs>
+  <rect x="1" y="1" width="1198" height="388" rx="14" fill="#0D1117" stroke="#30363D" stroke-width="1.5"/>
+  <g clip-path="url(#panel)">
+    <path d="M1,15 a14,14 0 0 1 14,-14 h1170 a14,14 0 0 1 14,14 v41 h-1198 z" fill="#161B22"/>
+    <line x1="1" y1="56" x2="1199" y2="56" stroke="#30363D" stroke-width="1"/>
+    <circle cx="1060" cy="30" r="300" fill="#25D366" opacity="0.045"/>
+    <circle cx="30" cy="28" r="7" fill="#FF5F57"/>
+    <circle cx="54" cy="28" r="7" fill="#FEBC2E"/>
+    <circle cx="78" cy="28" r="7" fill="#28C840"/>
+    <text x="600" y="33" text-anchor="middle" class="title">whatsapp-command-channel — text your computer</text>
+    <rect x="0" y="56" width="4" height="334" fill="#25D366" opacity="0.85"/>
+    <text x="36" y="106" class="t"><tspan fill="#7D8590">$ </tspan><tspan fill="#25D366" font-weight="600">node connect.cjs</tspan></text>
+    <text x="36" y="136" class="t" fill="#C9D1D9">paired: 8-digit code accepted → session stored locally</text>
+    <text x="36" y="166" class="t"><tspan fill="#7D8590">$ </tspan><tspan fill="#25D366" font-weight="600">node wa-watch.cjs</tspan></text>
+    <text x="36" y="196" class="t" fill="#7D8590">daemon online · inbox watched (fs.watch) · watchdog armed (60s tick)</text>
+    <text x="36" y="226" class="t" fill="#C9D1D9">← "pull the overnight build log"</text>
+    <text x="36" y="256" class="t" fill="#C9D1D9">command center → your own Claude CLI login, full tools, no API key</text>
+    <text x="36" y="286" class="t" fill="#3FB950">→ reply: the actual log tail — a result, not a receipt</text>
+    <text x="36" y="346" class="t" fill="#7D8590">heartbeat beacon: connected · last_connected_ts · restart on dead/stale/stacked</text>
+  </g>
+</svg>
